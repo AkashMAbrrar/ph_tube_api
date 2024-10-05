@@ -27,6 +27,16 @@ const loadVedios = () => {
     .then((data) => displayVideos(data.videos))
     .catch((error) => console.log(error));
 };
+
+const loadCategoryVideos = (id) => {
+  alert(id);
+  // fetch categories
+  fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
+    .then((res) => res.json())
+    .then((data) => displayVideos(data.category))
+    .catch((error) => console.log(error));
+};
+
 // make the vedios item dynamic and push them into the cards
 const cardDemo = {
   category_id: "1001",
@@ -51,6 +61,7 @@ const cardDemo = {
 
 const displayVideos = (videos) => {
   const videoContainer = document.getElementById("vedios");
+  videoContainer.innerHTML = "";
   videos.forEach((video) => {
     console.log(video);
     // showing them in the ui
@@ -109,11 +120,14 @@ const displayCategories = (categories) => {
   categories.forEach((item) => {
     console.log(item);
     // create a button
-    const button = document.createElement("button");
-    button.classList = "btn btn-sm";
-    button.innerText = item.category;
+    const buttonContainer = document.createElement("div");
+    buttonContainer.innerHTML = `
+     <button onclick="loadCategoryVideos(${item.category_id})" class="btn btn-sm" >
+     ${item.category}
+     </button>
+    `;
 
     // add button to category container
-    categoryContainer.append(button);
+    categoryContainer.append(buttonContainer);
   });
 };
