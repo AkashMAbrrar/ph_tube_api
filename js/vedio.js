@@ -52,6 +52,29 @@ const loadCategoryVideos = (id) => {
     .catch((error) => console.log(error));
 };
 
+const loadDetails = async (video_id) => {
+  const url = `https://openapi.programming-hero.com/api/phero-tube/video/${video_id}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  displayDetails(data.video);
+};
+
+const displayDetails = (video) => {
+  console.log(video);
+  const detailsContainer = document.getElementById("modal_content");
+  detailsContainer.innerHTML = `
+  <img class="w-36" src=${video.thumbnail}/>
+  <p>Description: ${video.description}</p>
+  <p>Description: ${video.authors.views}</p>
+  `;
+
+  // way-1 to show the modal
+  // document.getElementById("showModalData").click();
+
+  // way-2 to show the modal made by daisy ui function showModal
+  document.getElementById("customModal").showModal();
+};
+
 // make the vedios item dynamic and push them into the cards
 const cardDemo = {
   category_id: "1001",
@@ -90,7 +113,6 @@ const displayVideos = (videos) => {
     videoContainer.classList.add("grid");
   }
   videos.forEach((video) => {
-    console.log(video);
     // showing them in the ui
     const card = document.createElement("div");
     card.classList = "card card-compact";
@@ -120,7 +142,7 @@ const displayVideos = (videos) => {
    <div>
    <h2 class="font-bold">${video.title}</h2>
    <div class="flex items-center gap-2">
-   <p></p>
+      <p class="text-gray-400">${video.authors[0].profile_name}</p>
 
    ${
      video.authors[0].verified === true
@@ -130,8 +152,12 @@ const displayVideos = (videos) => {
        />`
        : ""
    }
+
    </div>
-   <p class="text-gray-400">${video.authors[0].profile_name}</p>
+
+   <p> <button onclick="loadDetails('${
+     video.video_id
+   }')" class="btn btn-sm btn-error">details</button> </p>
    </div>
   </div>
     `;
