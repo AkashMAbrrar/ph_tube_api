@@ -28,9 +28,11 @@ const loadCategories = () => {
     .then((data) => displayCategories(data.categories))
     .catch((error) => console.log(error));
 };
-const loadVedios = () => {
+const loadVedios = (searchText = "") => {
   // fetch data
-  fetch("https://openapi.programming-hero.com/api/phero-tube/videos")
+  fetch(
+    `https://openapi.programming-hero.com/api/phero-tube/videos?title=${searchText}`
+  )
     .then((res) => res.json())
     .then((data) => displayVideos(data.videos))
     .catch((error) => console.log(error));
@@ -65,7 +67,6 @@ const displayDetails = (video) => {
   detailsContainer.innerHTML = `
   <img class="w-36" src=${video.thumbnail}/>
   <p>Description: ${video.description}</p>
-  <p>Description: ${video.authors.views}</p>
   `;
 
   // way-1 to show the modal
@@ -165,8 +166,6 @@ const displayVideos = (videos) => {
   });
 };
 
-loadCategories();
-loadVedios();
 // 2: display function
 const displayCategories = (categories) => {
   const categoryContainer = document.getElementById("categories");
@@ -175,12 +174,19 @@ const displayCategories = (categories) => {
     // create a button
     const buttonContainer = document.createElement("div");
     buttonContainer.innerHTML = `
-     <button id="btn-${item.category_id}" onclick="loadCategoryVideos(${item.category_id})" class="btn btn-sm category-btn" >
-     ${item.category}
-     </button>
+    <button id="btn-${item.category_id}" onclick="loadCategoryVideos(${item.category_id})" class="btn btn-sm category-btn" >
+    ${item.category}
+    </button>
     `;
 
     // add button to category container
     categoryContainer.append(buttonContainer);
   });
 };
+// search video by on the input field
+document.getElementById("search_input").addEventListener("keyup", (e) => {
+  e.preventDefault();
+  loadVedios(e.target.value);
+});
+loadCategories();
+loadVedios();
